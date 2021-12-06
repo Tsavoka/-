@@ -1,0 +1,42 @@
+
+# Есть медленный алгоритм: перебираем список чисел и смотрим, есть ли дальше 
+# в списке текущее число.
+# Надо придумать быстрый способ и проверить, что он действительно лучше.
+# import numpy as np
+# numbers = list(np.random.randint(low = 1, high = 10, size = 100000))
+# for i, number in enumerate(numbers):
+# number_is_in_tail = number in numbers[i+1:]
+
+# проверяем, на сколько быстр предложенный алгоритм
+import numpy as np
+import time
+start_time = time.time()
+numbers = list(np.random.randint(low = 1, high = 10, size = 100000))
+for i, number in enumerate(numbers):
+    number_is_in_tail = number in numbers[i+1:]    
+print("--- %s seconds ---" % (time.time() - start_time))
+# в среднем 11 секунд
+
+
+# немного усовершенствуем его
+import numpy as np
+import collections
+import time
+
+
+start_time = time.time()
+
+numbers = list(np.random.randint(low = 1, high = 10, size = 100000))
+collection = collections.Counter()  # сделаем из списка в 100000 элементов словарь из 9
+
+for i in numbers:
+    collection[i] += 1
+
+for i in numbers:
+    collection[i]-=1                # уменьшаем значения ключей, равных текущему итератору
+    if collection[i] == 0:
+        collection.pop(i)           # когда закончились, удаляем
+    number_is_in_tail = i in collection.keys()
+
+print("--- %s seconds ---" % (time.time() - start_time))
+# в среднем 0.05 секунды
